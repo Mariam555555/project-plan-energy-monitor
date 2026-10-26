@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Energy Monitor - Dashboard</title>
+    <!-- Font for Presentation -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           Dashboard CSS
+           ========================================= */
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--bg-card);
+            padding: 24px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header h2 {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: normal;
+        }
+
+        .scope-box {
+            background-color: var(--bg-body);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            color: #475569;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background-color: #f8fafc;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .presentation-tab {
+            margin-left: auto;
+            border-color: #38bdf8;
+            color: #0f172a;
+            background: #e0f2fe;
+        }
+        .presentation-tab.active {
+            background: #0f172a;
+            color: #38bdf8;
+            border-color: #0f172a;
+        }
+
+        .focus-text {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: #334155;
+        }
+
+        /* Accordion (Epics) */
+        .epic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .epic-header {
+            padding: 16px 20px;
+            background: #f8fafc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid transparent;
+            transition: background 0.2s;
+        }
+
+        .epic-header:hover {
+            background: #f1f5f9;
+        }
+
+        .epic-title h3 {
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .epic-title p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .arrow {
+            font-size: 12px;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .epic-content {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .epic-card.active .epic-content {
+            display: block;
+        }
+
+        .epic-card.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* User Stories */
+        .user-story {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .user-story:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .story-id {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .story-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .story-desc {
+            background: white;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #334155;
+        }
+
+        .criteria-box h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .criteria-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .criteria-box li {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        /* Warnings Section */
+        .warnings {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .warnings h3 {
+            color: #92400e;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .warnings ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: #b45309;
+            font-size: 14px;
+        }
+
+        /* =========================================
+           Presentation Embedded CSS
+           ========================================= */
+        #presentation-container {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 650px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            color: #f8fafc;
+        }
+
+        .slide {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            transform: scale(0.95);
+            pointer-events: none;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        .title-slide {
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 3.5rem;
+            background: -webkit-linear-gradient(45deg, #4ade80, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .slide h2 {
+            font-size: 2rem;
+            color: #38bdf8;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            color: #cbd5e1;
+        }
+
+        .slide ul {
+            padding-left: 30px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .controls button {
+            background: transparent;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 8px 16px;
+            font-size: 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .controls button:hover {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+
+        .counter {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #94a3b8;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .pipeline-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pipeline-step {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #38bdf8;
+            text-align: center;
+        }
+
+        .pipeline-arrow {
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .highlight-box {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 4px solid #4ade80;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1>Smart Home Energy Monitor</h1>
+            <h2>Graduation Project Plan Backlog</h2>
+            <div class="scope-box">
+                <strong>Project Scope:</strong> Prepare and process household electricity readings, calculate consumption and costs, monitor monthly budgets, and provide a website for users to view results and alerts.
+            </div>
+        </div>
+
+        <div class="tabs" id="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('sem1', this)">First Semester</button>
+            <button class="tab-btn" onclick="switchTab('sem2', this)">Second Semester</button>
+            <button class="tab-btn presentation-tab" onclick="switchTab('presentation', this)">🎥 View Presentation</button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+            <div class="focus-text" id="focus-text">
+                <!-- Focus text will be injected here -->
+            </div>
+
+            <div id="epics-container">
+                <!-- Epics will be injected here dynamically -->
+            </div>
+
+          
+        </div>
+
+        <!-- Embedded Presentation Viewer -->
+        <div id="presentation-container">
+            <!-- Slide 1 -->
+            <div class="slide title-slide active">
+                <h1>Smart Home Energy Monitor</h1>
+                <p style="font-size: 1.4rem; color: #94a3b8;">Graduation Project Presentation</p>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <h2>What Problem Are We Solving?</h2>
+                <ul>
+                    <li>Electricity consumption generates a continuous flow of data from many households and appliances, making real-time processing challenging.</li>
+                    <li>Traditional processing methods struggle to efficiently handle the large volume of continuous IoT data.</li>
+                    <li>As the number of households, devices, and readings increases, the system must scale while maintaining reliable performance.</li>
+                </ul>
+                <div class="highlight-box">
+                    <p style="margin: 0; color: #4ade80;"><strong>Therefore:</strong> A scalable real-time streaming system is needed to collect, process, and analyze electricity consumption data from multiple sources.</p>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <h2>Our Solution</h2>
+                <p>A scalable web-based real-time streaming system for collecting, processing, storing, and analyzing electricity consumption data from multiple households and appliances.</p>
+                <p><strong>The system provides:</strong></p>
+                <ul>
+                    <li>Real-time data ingestion from multiple IoT devices and households.</li>
+                    <li>Scalable stream processing through distributed messaging and processing.</li>
+                    <li>Continuous analysis of appliance- and household-level consumption data.</li>
+                    <li>Centralized storage of processed historical data for queries and reports.</li>
+                    <li>Real-time monitoring and visualization through a web-based dashboard.</li>
+                </ul>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide">
+                <h2>Dataset</h2>
+                <p><strong>REFIT Cleaned Dataset</strong></p>
+                <p>We use the REFIT Cleaned Dataset as the main source of electricity measurements. It provides:</p>
+                <ul>
+                    <li>Household electricity measurements.</li>
+                    <li>Appliance-level data.</li>
+                    <li>Time-based consumption records.</li>
+                </ul>
+                <p style="margin-top: 15px; color: #4ade80;">The dataset allows us to build and test a realistic electricity monitoring pipeline.</p>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="slide">
+                <h2>Data Pipeline</h2>
+                <div class="pipeline-container" style="gap: 5px;">
+                    <div style="border: 2px dashed #f59e0b; padding: 12px 8px 8px 8px; border-radius: 8px; display: flex; align-items: center; gap: 5px; position: relative; margin-top: 15px;">
+                        <span style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: #f59e0b; white-space: nowrap; font-weight: bold;">Hardware Simulation Layer</span>
+                        <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b;">REFIT Clean CSV</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                        <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b;">Mapping Registry</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                        <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b;">Replay</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                        <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b;">Canonical Events</div>
+                    </div>
+                    <div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                    <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem;">Kafka</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                    <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem;">Processing</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                    <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem;">Data Warehouse</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                    <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem;">Backend / API</div><div class="pipeline-arrow" style="font-size: 1rem;">➔</div>
+                    <div class="pipeline-step" style="padding: 8px; font-size: 0.85rem;">Frontend</div>
+                </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="slide">
+                <h2>Hardware Simulation Layer</h2>
+                <div class="highlight-box" style="margin-bottom: 20px; background: rgba(245, 158, 11, 0.1); border-left-color: #f59e0b;">
+                    <p style="margin: 0; color: #f59e0b;"><strong>Mapping & Replay</strong></p>
+                </div>
+                <ul>
+                    <li><strong>Mapping Registry:</strong> Connects households with their devices.
+                        <ul>
+                            <li>H001 ➔ Devices | H002 ➔ Devices | H003 ➔ Devices</li>
+                        </ul>
+                    </li>
+                    <li><strong>Replay:</strong> Replays historical REFIT measurements as continuous streaming events. Generates a continuous data flow that represents real-time electricity consumption.</li>
+                </ul>
+            </div>
+
+            <!-- Slide 7 -->
+            <div class="slide">
+                <h2>Streaming & Processing</h2>
+                <ul>
+                    <li><strong>Apache Kafka:</strong> Acts as the scalable streaming layer. Transfers incoming events to the processing layer.</li>
+                    <br>
+                    <li><strong>Processing Layer:</strong> Transforms and aggregates the incoming events to generate useful metrics such as:
+                        <ul>
+                            <li>Energy consumption & Device-level consumption</li>
+                            <li>Daily and Monthly consumption & Electricity cost</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Slide 8 -->
+            <div class="slide">
+                <h2>Dashboard</h2>
+                <p><strong>User Dashboard Features:</strong></p>
+                <p>The processed data is presented through a web dashboard. Users can view:</p>
+                <div class="pipeline-container" style="justify-content: flex-start;">
+                    <div class="pipeline-step" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">Total Consumption</div>
+                    <div class="pipeline-step" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">Cost Tracking</div>
+                    <div class="pipeline-step" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">Device Breakdown</div>
+                    <div class="pipeline-step" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">Alerts</div>
+                </div>
+            </div>
+
+            <!-- Slide 9 -->
+            <div class="slide">
+                <h2>Budget & Alerts</h2>
+                <p><strong>Smart Budget Monitoring</strong></p>
+                <ul>
+                    <li>Users can set: Daily Budget, Monthly Budget.</li>
+                    <li>The system monitors consumption and estimates whether the user is likely to exceed the selected budget.</li>
+                </ul>
+                <div class="highlight-box" style="background: rgba(248, 113, 113, 0.1); border-color: #f87171;">
+                    <p style="margin:0; color: #f87171;"><strong>Example:</strong> Daily Budget: 20 EGP | Expected Cost: 22 EGP ➔ ⚠️ Budget Warning</p>
+                </div>
+                <p style="margin-top: 15px;">The system can also recommend actions such as reducing the usage of high-consuming appliances.</p>
+            </div>
+
+            <!-- Slide 10 -->
+            <div class="slide">
+                <h2>Future Vision</h2>
+                <p><strong>Future Improvements:</strong></p>
+                <ul>
+                    <li>Machine Learning for consumption prediction.</li>
+                    <li>Anomaly detection & Weather-based analysis.</li>
+                    <li>Real-time IoT / smart meter integration.</li>
+                    <li>More personalized energy-saving recommendations.</li>
+                    <li>Automatic appliance control.</li>
+                </ul>
+            </div>
+
+            <!-- Slide 11 -->
+            <div class="slide title-slide">
+                <h2>Conclusion</h2>
+                <h1 style="font-size: 2.5rem; margin-top: 10px;">From Data to Decisions</h1>
+                
+                <p style="color: #cbd5e1; font-size: 1.1rem; margin-bottom: 5px; margin-top: 20px;"><strong>Our system transforms:</strong></p>
+                <div class="pipeline-container" style="margin-top: 0; margin-bottom: 20px;">
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Raw Data</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Streaming</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Processing</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Analysis</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="background: #38bdf8; color: #0f172a; padding: 8px 15px; font-size: 0.9rem;">Insights</div>
+                </div>
+
+                <p style="color: #cbd5e1; font-size: 1.1rem; margin-bottom: 5px;"><strong>and helps users:</strong></p>
+                <div class="pipeline-container" style="margin-top: 0; margin-bottom: 15px;">
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Monitor</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Understand</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="padding: 8px 15px; font-size: 0.9rem;">Analyze</div><div class="pipeline-arrow">➔</div>
+                    <div class="pipeline-step" style="background: #4ade80; border-color: #4ade80; color: #0f172a; padding: 8px 15px; font-size: 0.9rem;">Optimize</div>
+                </div>
+
+                <p style="color: #4ade80; font-size: 1.1rem;">their electricity consumption.</p>
+                <h2 style="border: none; margin-top: 20px; color: #f8fafc;">Thank you</h2>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="controls">
+                <button onclick="prevSlide()">❮ Prev</button>
+                <span class="counter" id="slide-counter">1 / 11</span>
+                <button onclick="nextSlide()">Next ❯</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================
+        // Dashboard Data
+        // =========================================
+        const projectData = {
+            sem1: {
+                focus: "Focus: data preparation, streaming ingestion, processing, analytical storage, cost calculation, AI prediction, and budget alerts.",
+                epics: [
+                    {
+                        id: "Epic 1", title: "Data Source & Preparation", objective: "Prepare the REFIT Cleaned Dataset for reliable processing and analysis.",
+                        stories: [
+                            { id: "US 1.1", title: "Explore the Dataset", desc: "As a data engineer, I need to inspect the REFIT Cleaned Dataset, so that I can understand its structure before processing it.", criteria: ["The dataset columns, data types, measurement units, and timestamp format are documented.", "Household and appliance identifiers are identified where available.", "Potential data-quality issues are recorded."] },
+                            { id: "US 1.2", title: "Clean and Validate Data", desc: "As a data engineer, I need to clean invalid, missing, and duplicate records, so that downstream calculations use reliable data.", criteria: ["Missing values are identified and handled according to documented rules.", "Duplicate records are identified and handled using a defined duplicate key or rule.", "Invalid timestamps and impossible or out-of-range measurements are flagged or handled according to documented rules.", "A validation report summarizes the records processed and the issues found."] },
+                            { id: "US 1.3", title: "Map Households and Appliances", desc: "As a data engineer, I need a mapping registry for households and appliances, so that each reading can be associated with the correct entity.", criteria: ["Each mapped appliance is associated with a valid household identifier where the source data supports the relationship.", "Unmapped or ambiguous identifiers are reported rather than silently assigned.", "The mapping registry has a documented structure and can be reused by the pipeline."] },
+                            { id: "US 1.4", title: "Standardize Energy Events", desc: "As a data engineer, I need a canonical event schema, so that readings have a consistent structure throughout the pipeline.", criteria: ["The schema defines required identifiers, timestamp, measurement value, and unit fields.", "A sample valid event passes schema validation.", "An event missing a required field fails validation with a useful error."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 2", title: "Streaming Ingestion", objective: "Simulate a continuous stream of energy readings from historical REFIT data.",
+                        stories: [
+                            { id: "US 2.1", title: "Replay Historical Readings", desc: "As a data engineer, I need a replay service to publish historical readings incrementally, so that the project can simulate streaming data.", criteria: ["The service reads records from the prepared dataset in chronological or documented order.", "Records are published incrementally rather than all at once.", "The replay rate or delay can be configured or is documented."] },
+                            { id: "US 2.2", title: "Publish Events to Kafka", desc: "As a data engineer, I need a Kafka producer and configured topics, so that energy readings can enter the streaming pipeline.", criteria: ["The required Kafka topic or topics are configured and documented.", "Valid events are published with household ID, appliance ID, timestamp, measurement value, and unit when available.", "Successful publishing can be verified through logs or a test consumer."] },
+                            { id: "US 2.3", title: "Handle Ingestion Failures", desc: "As a data engineer, I need publishing failures to be logged and handled, so that ingestion problems can be diagnosed.", criteria: ["Publishing errors are logged with enough context to identify the failed event or operation.", "A failed publish does not silently appear as a successful publish.", "The service follows a documented retry or failure-handling policy."] },
+                            { id: "US 2.4", title: "Verify Event Delivery", desc: "As a data engineer, I need to test event delivery, so that I can confirm readings reach the intended Kafka topic.", criteria: ["A test consumer can receive events published by the producer.", "The received event content matches the published event content.", "The test results record successful delivery and any failures."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 3", title: "Stream Processing & Consumption Analytics", objective: "Consume incoming readings and calculate household- and appliance-level electricity consumption.",
+                        stories: [
+                            { id: "US 3.1", title: "Consume and Validate Events", desc: "As a data engineer, I need a Kafka consumer to validate incoming events, so that malformed readings do not corrupt analytics.", criteria: ["The consumer reads events from the configured topic.", "Events are checked for required fields, supported units, and valid timestamps.", "Invalid events are logged or routed according to the documented error policy."] },
+                            { id: "US 3.2", title: "Calculate Consumption", desc: "As a data analyst, I need electricity consumption calculated at appliance and household levels, so that usage can be analyzed accurately.", criteria: ["The consumption calculation follows a documented rule appropriate to the source measurement format.", "Appliance-level results can be associated with the correct household.", "Test inputs produce the expected consumption outputs."] },
+                            { id: "US 3.3", title: "Aggregate Daily and Monthly Usage", desc: "As a data analyst, I need daily and monthly consumption aggregates, so that usage trends can be compared over time.", criteria: ["Readings are grouped into the correct day and month using a documented timezone or timestamp rule.", "Daily and monthly totals can be retrieved for a household and, where supported, an appliance.", "Aggregates are updated according to the defined processing approach when new readings arrive."] },
+                            { id: "US 3.4", title: "Handle Duplicate and Late Readings", desc: "As a data engineer, I need duplicate and late-arriving readings handled consistently, so that aggregate results remain reliable.", criteria: ["Duplicate handling follows a documented rule.", "Late readings are processed or rejected according to a documented policy.", "Tests demonstrate that duplicate or late events do not cause unexplained totals."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 4", title: "Data Warehouse", objective: "Store raw or normalized readings, metadata, and analytical results in structured storage.",
+                        stories: [
+                            { id: "US 4.1", title: "Design the Warehouse Schema", desc: "As a data engineer, I need a database schema with defined tables and relationships, so that energy data can be stored consistently.", criteria: ["Tables and relationships for readings, households, appliances, and aggregates are documented.", "Primary and foreign keys are defined where appropriate.", "The schema supports the queries required by the project."] },
+                            { id: "US 4.2", title: "Store Readings and Metadata", desc: "As a data engineer, I need to store energy readings and household/appliance metadata, so that historical data can be queried.", criteria: ["Valid readings are stored with their relevant identifiers, timestamps, values, and units.", "Household and appliance metadata can be linked to readings.", "Invalid records are handled according to the pipeline's validation rules."] },
+                            { id: "US 4.3", title: "Store Analytical Aggregates", desc: "As a data analyst, I need daily and monthly aggregates stored in the warehouse, so that analytical results can be retrieved efficiently.", criteria: ["Daily and monthly aggregate records include the relevant household, period, and consumption value.", "Aggregate values can be checked against the processing output.", "SQL queries can retrieve the aggregates for a selected household and period."] },
+                            { id: "US 4.4", title: "Protect Data Integrity", desc: "As a data engineer, I need database integrity checks, so that unintended duplicate or inconsistent records are prevented.", criteria: ["Appropriate uniqueness and relationship constraints are applied where feasible.", "Tests verify that duplicate records are handled according to the defined rule.", "SQL validation queries are documented and produce reproducible results."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 5", title: "Electricity Cost Calculation", objective: "Convert electricity consumption into estimated monetary costs.",
+                        stories: [
+                            { id: "US 5.1", title: "Configure the Tariff", desc: "As a project administrator, I need the electricity tariff used by the project to be defined, so that cost calculations use a consistent rate model.", criteria: ["The tariff value and unit are documented.", "The tariff source or project assumption is recorded.", "The calculation logic can use the configured tariff without an undocumented hard-coded value."] },
+                            { id: "US 5.2", title: "Calculate Daily and Monthly Costs", desc: "As a homeowner, I need daily and monthly electricity costs estimated from consumption, so that I can understand my electricity spending.", criteria: ["Cost is calculated using the documented tariff model and consumption in kWh.", "Daily and monthly costs can be calculated for each supported household.", "A known test consumption and tariff produce the expected cost."] },
+                            { id: "US 5.3", title: "Estimate Appliance-Level Costs", desc: "As a homeowner, I need estimated costs by appliance where the data supports it, so that I can identify costly appliances.", criteria: ["Appliance cost is calculated only when required consumption data is available.", "The calculation uses the same documented tariff rules as household costs.", "Unsupported or incomplete appliance-level estimates are clearly identified."] },
+                            { id: "US 5.4", title: "Store and Validate Costs", desc: "As a data engineer, I need calculated cost results stored and tested, so that other components can retrieve trusted values.", criteria: ["Cost results are stored with the household and relevant time period.", "Stored values can be retrieved through SQL.", "Automated or documented tests cover normal and boundary cases."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 6", title: "AI-Assisted Budget Monitoring & Smart Alerts", objective: "Analyze electricity consumption and calculated costs in relation to the user’s monthly budget, identify budget risks, and generate meaningful alerts.",
+                        stories: [
+                            { id: "US 6.1", title: "Analyze Budget Status", desc: "As an AI developer, I need to analyze the household’s actual electricity costs in relation to the user’s monthly budget, so that the system can show the current budget status clearly.", criteria: ["The system receives actual electricity costs and the configured monthly budget.", "The system calculates the remaining budget and the percentage of the budget used.", "The system identifies budget statuses such as Normal, Warning, and Exceeded based on documented thresholds.", "The analysis uses actual spending data and does not generate future consumption or cost predictions."] },
+                            { id: "US 6.2", title: "Identify Budget Risks", desc: "As an AI developer, I need to analyze available consumption and cost information, so that the system can identify conditions that may put the user’s budget at risk.", criteria: ["The system analyzes available consumption and cost data for the relevant household and billing period.", "Budget-risk conditions are identified using documented rules or an implemented AI-based analysis method.", "Each identified risk is associated with the relevant consumption, cost, or budget information.", "The system does not claim to predict end-of-month consumption or costs."] },
+                            { id: "US 6.3", title: "Generate Smart Budget Alerts", desc: "As an AI developer, I need to generate meaningful budget alerts based on the user’s actual spending and identified risks, so that the user can take action when needed.", criteria: ["An alert is generated when a documented budget threshold or risk condition is met.", "Each alert includes a clear message, timestamp, budget status, and relevant actual cost or consumption values.", "Alerts indicate an appropriate severity level, such as Warning or Exceeded.", "The system avoids repeatedly generating duplicate alerts for the same condition within the configured period."] },
+                            { id: "US 6.4", title: "Explain Alert Reasons", desc: "As an AI developer, I need each alert to explain why it was triggered, so that the user can understand the situation and decide what action to take.", criteria: ["Each alert includes a short explanation linked to the actual consumption, cost, or budget condition that triggered it.", "The explanation uses understandable language and avoids unsupported conclusions.", "The system handles missing or incomplete data without presenting uncertain values as confirmed facts.", "Alert explanations do not include unsupported future predictions."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 7", title: "End-to-End Integration & Testing", objective: "Integrate and validate the first-semester data and analytics workflow.",
+                        stories: [
+                            { id: "US 8.1", title: "Run the Complete Data Pipeline", desc: "As a project team member, I need to run the pipeline from source data through ingestion, processing, and storage, so that I can verify the components work together.", criteria: ["The prepared REFIT data can be replayed into Kafka.", "The consumer processes events and stores readings or derived results in the warehouse.", "Logs or test evidence show the end-to-end run completed or identify failures."] },
+                            { id: "US 8.2", title: "Verify Analytics and Alerts Integration", desc: "As a project team member, I need to verify the integration of consumption, costs, predictions, budgets, and alerts, so that outputs remain consistent across components.", criteria: ["New readings update the relevant aggregates and cost results according to the defined pipeline behavior.", "Prediction results can be compared with actual values.", "Budget comparisons and alerts use the relevant period and stored values."] },
+                            { id: "US 8.3", title: "Test Failure Scenarios", desc: "As a tester, I need to test missing data, duplicate events, late readings, and unavailable predictions, so that the pipeline behaves predictably under abnormal conditions.", criteria: ["Each listed failure scenario has a documented test case.", "Expected behavior and actual results are recorded.", "Failures are logged and do not silently produce misleading results."] },
+                            { id: "US 8.4", title: "Document and Demonstrate the Pipeline", desc: "As a project reviewer, I need setup documentation and an end-to-end demonstration, so that I can reproduce and assess the first-semester workflow.", criteria: ["The README includes prerequisites and setup/run instructions.", "An architecture diagram shows the main data flow and components.", "A demonstration covers consumption analysis, cost calculation, prediction, budget monitoring, and alerts."] }
+                        ]
+                    }
+                ]
+            },
+            sem2: {
+                focus: "Focus: build the application backend and website interface that present and use the data, analytics, predictions, budgets, and alerts developed in the first semester.",
+                epics: [
+                    {
+                        id: "Epic 1", title: "Backend Architecture & API Development", objective: "Build backend services and APIs that connect the website to the data warehouse and analytics components.",
+                        stories: [
+                            { id: "US 1.1", title: "Set Up the Backend", desc: "As a developer, I need a structured backend application, so that API features can be developed and maintained consistently.", criteria: ["The backend project structure and configuration are documented.", "Environment-specific settings are kept outside source code where appropriate.", "The application can start using the documented setup steps."] },
+                            { id: "US 1.2", title: "Retrieve Household and Appliance Data", desc: "As a frontend developer, I need APIs for household and appliance information, so that the website can display the correct entities.", criteria: ["Endpoints return the supported household and appliance fields.", "Responses use a documented format.", "Invalid requests and missing records return appropriate HTTP status codes."] },
+                            { id: "US 1.3", title: "Retrieve Consumption, Costs, and Predictions", desc: "As a frontend developer, I need APIs for consumption metrics, actual costs, and AI predictions, so that dashboard components can display analytical results.", criteria: ["Endpoints support the required household and time-period filters where applicable.", "Responses distinguish actual results from predicted results.", "Unavailable data is handled with a documented response rather than a misleading value."] },
+                            { id: "US 1.4", title: "Manage Budgets and Alerts Through APIs", desc: "As a frontend developer, I need APIs to manage budgets and retrieve alerts, so that users can view and update their budget status.", criteria: ["Budget endpoints support the required create, read, or update operations within project scope.", "Alert endpoints return alert details and history where available.", "Request validation, error handling, and API usage are documented."] },
+                            { id: "US 1.5", title: "Secure and Test the API", desc: "As a project owner, I need API access and input handling to be tested, so that application data is handled appropriately.", criteria: ["Authentication and authorization are implemented if required by the agreed project scope.", "Invalid inputs are rejected with appropriate status codes.", "Automated or documented API tests cover success and error responses."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 2", title: "Dashboard UI & Frontend Architecture", objective: "Create a responsive website structure and reusable interface components.",
+                        stories: [
+                            { id: "US 2.1", title: "Set Up the Frontend", desc: "As a developer, I need a configured frontend project, so that the website can be built and maintained consistently.", criteria: ["The framework and setup instructions are documented.", "The frontend starts successfully in the development environment.", "Reusable components follow a consistent structure."] },
+                            { id: "US 2.2", title: "Navigate the Website", desc: "As a homeowner, I need clear navigation between dashboard, budget, and alerts sections, so that I can find important energy information easily.", criteria: ["The main sections are accessible through the navigation structure.", "The current page or section is identifiable.", "Navigation works on supported desktop and mobile layouts."] },
+                            { id: "US 2.3", title: "View a Responsive Dashboard", desc: "As a homeowner, I need a responsive dashboard, so that I can view energy information on desktop, tablet, or mobile screens.", criteria: ["The main dashboard adapts to the agreed target screen sizes.", "Key information remains readable without unintended horizontal overflow.", "Loading, empty, and error states are represented clearly."] },
+                            { id: "US 2.4", title: "Reuse Data Display Components", desc: "As a frontend developer, I need reusable chart and data-display components, so that information is presented consistently across the website.", criteria: ["Common display components can be reused by multiple pages.", "Components accept data and labels through defined inputs.", "Empty or invalid chart data does not crash the page."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 3", title: "Energy Consumption Visualization", objective: "Present household and appliance consumption in clear charts and summaries.",
+                        stories: [
+                            { id: "US 3.1", title: "View Total Household Consumption", desc: "As a homeowner, I need to view total household electricity consumption, so that I can understand my overall energy usage.", criteria: ["The dashboard displays the available total for the selected period.", "The displayed unit is clear.", "The value matches the corresponding backend result."] },
+                            { id: "US 3.2", title: "Compare Daily and Monthly Trends", desc: "As a homeowner, I need daily and monthly consumption charts, so that I can identify changes in usage over time.", criteria: ["Charts show the correct date or month labels and consumption values.", "The selected period is reflected in the chart.", "Missing data is indicated or handled according to the interface design."] },
+                            { id: "US 3.3", title: "Compare Appliances", desc: "As a homeowner, I need a consumption breakdown by appliance, so that I can identify which appliances use the most electricity.", criteria: ["The interface shows consumption by appliance when data is available.", "The highest-consuming appliances can be identified from the displayed values.", "Appliance labels and measurement units are clear."] },
+                            { id: "US 3.4", title: "Filter Consumption Results", desc: "As a homeowner, I need to filter consumption results by household, appliance, and time period where applicable, so that I can focus on the data I need.", criteria: ["Available filters can be selected and applied.", "Displayed charts and totals update to reflect the selected filters.", "Invalid or empty filter results are handled clearly."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 4", title: "Electricity Cost & AI Prediction Dashboard", objective: "Display actual electricity costs and predicted end-of-month consumption and costs.",
+                        stories: [
+                            { id: "US 4.1", title: "View Actual Electricity Costs", desc: "As a homeowner, I need to view actual electricity costs accumulated during the current billing period, so that I can track my spending.", criteria: ["The dashboard displays the actual cost for the relevant billing period when data is available.", "The currency and period are clearly identified.", "The displayed amount matches the backend result."] },
+                            { id: "US 4.2", title: "View Predicted Consumption and Cost", desc: "As a homeowner, I need to view predicted end-of-month consumption and cost, so that I can estimate my likely final bill.", criteria: ["Predicted consumption and predicted cost are displayed as estimates, not actual values.", "The target billing period is clear.", "Unavailable prediction results are shown as unavailable rather than as zero."] },
+                            { id: "US 4.3", title: "Compare Actual and Predicted Costs", desc: "As a homeowner, I need to compare actual spending with the predicted end-of-month cost, so that I can understand the likely difference.", criteria: ["Actual and predicted values are visually distinguishable.", "Both values refer to compatible periods and units.", "The comparison updates when the backend returns updated results."] },
+                            { id: "US 4.4", title: "Explain Prediction Context", desc: "As a homeowner, I need to see when a prediction was generated and understand its limitations, so that I can interpret it appropriately.", criteria: ["The prediction generation timestamp is shown when available.", "Relevant model limitations or uncertainty information is displayed when supplied by the model.", "The interface does not present an estimate as a guaranteed final bill."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 5", title: "Budget Management Interface", objective: "Allow users to create or update a monthly budget and view actual and predicted spending against it.",
+                        stories: [
+                            { id: "US 5.1", title: "Set or Update a Budget", desc: "As a homeowner, I need to enter and save a monthly electricity budget, so that the system can monitor my spending limit.", criteria: ["The form accepts a monetary budget value for the relevant billing period.", "Negative or invalid values are rejected with a clear message.", "The form reports success only after the backend confirms the save."] },
+                            { id: "US 5.2", title: "View Budget Status", desc: "As a homeowner, I need to view my current budget and actual spending, so that I can understand my current financial position.", criteria: ["The saved budget and actual spending are displayed for the same period.", "The remaining budget is calculated consistently with the backend result or documented formula.", "Missing budget or spending data is clearly identified."] },
+                            { id: "US 5.3", title: "View Predicted Budget Risk", desc: "As a homeowner, I need to see predicted end-of-month spending compared with my budget, so that I can identify a possible overrun early.", criteria: ["The interface compares predicted cost with the budget for the same period.", "The amount remaining or predicted to exceed the budget is shown when calculable.", "The status distinguishes current actual spending from forecast spending."] },
+                            { id: "US 5.4", title: "Handle Save and Loading States", desc: "As a homeowner, I need feedback while saving or loading budget information, so that I know whether my action succeeded.", criteria: ["A loading state is displayed during the relevant request.", "Success and failure messages are clear.", "The interface prevents or handles accidental repeated submissions."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 6", title: "Smart Alerts & Notifications Interface", objective: "Present budget alerts and notification history generated by the alert engine.",
+                        stories: [
+                            { id: "US 6.1", title: "View Current Alerts", desc: "As a homeowner, I need to view current budget alerts, so that I can understand risks that may require action.", criteria: ["The alerts section retrieves alert records through the backend API.", "Each available alert shows its message, timestamp, and reason.", "A clear empty state appears when there are no alerts."] },
+                            { id: "US 6.2", title: "Understand Budget-Risk Alerts", desc: "As a homeowner, I need alerts to show related budget and predicted-cost information, so that I can understand why a warning was generated.", criteria: ["Budget-risk alerts display relevant budget and predicted-cost values when available.", "Potential budget overruns are visually distinguishable.", "Displayed alert details match the backend response."] },
+                            { id: "US 6.3", title: "Review Alert History", desc: "As a homeowner, I need to review historical alerts, so that I can understand previous budget risks.", criteria: ["Historical alert records can be retrieved where supported by the backend.", "Each record displays its available timestamp and reason.", "Current and historical alerts are distinguishable where the API supports that distinction."] },
+                            { id: "US 6.4", title: "Refresh Alerts and Handle Errors", desc: "As a homeowner, I need alert information to refresh and errors to be communicated clearly, so that I can rely on the information shown.", criteria: ["The interface refreshes alerts according to the agreed design.", "API or network failures produce a clear error state.", "A failed refresh does not silently replace valid displayed data with misleading values."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 7", title: "Frontend & Backend Integration", objective: "Connect interface components to backend APIs and validate complete user workflows.",
+                        stories: [
+                            { id: "US 7.1", title: "Connect Dashboard Data", desc: "As a homeowner, I need dashboard components connected to the backend, so that displayed information reflects stored project data.", criteria: ["Consumption, cost, and prediction components call the corresponding APIs.", "Loading, success, empty, and error responses are handled.", "Displayed values match the backend responses for test cases."] },
+                            { id: "US 7.2", title: "Connect Budget and Alert Workflows", desc: "As a homeowner, I need budget updates and alert retrieval to work through the website, so that I can manage my budget and review warnings in one place.", criteria: ["A user can submit a valid budget and see the confirmed saved value.", "The alerts interface retrieves and displays available alert records.", "Errors from budget or alert APIs are shown clearly."] },
+                            { id: "US 7.3", title: "Handle API and Network Failures", desc: "As a developer, I need the frontend to handle failed requests and invalid responses, so that one API failure does not break the entire website.", criteria: ["Failed requests produce a controlled error state.", "Invalid or unexpected response data is handled without crashing the interface.", "The user can retry where retrying is supported by the design."] },
+                            { id: "US 7.4", title: "Test End-to-End User Workflows", desc: "As a tester, I need to test complete workflows from viewing consumption to updating a budget and viewing alerts, so that the application works as a connected system.", criteria: ["Documented test scenarios cover the major user workflows.", "Results shown in the interface agree with backend and warehouse data.", "Defects found during integration are recorded and retested after fixes."] }
+                        ]
+                    },
+                    {
+                        id: "Epic 8", title: "System Testing, Deployment & Final Delivery", objective: "Test, deploy, document, and demonstrate the completed application.",
+                        stories: [
+                            { id: "US 8.1", title: "Validate the Complete Application", desc: "As a project reviewer, I need the main application features tested, so that the final system meets the agreed requirements.", criteria: ["End-to-end tests cover consumption, costs, predictions, budgets, and alerts.", "Normal, empty, invalid-input, and error scenarios are tested where applicable.", "Test outcomes and unresolved issues are documented."] },
+                            { id: "US 8.2", title: "Check Quality and Basic Security", desc: "As a project owner, I need basic performance, responsiveness, and input-handling checks, so that the application is suitable for demonstration.", criteria: ["The interface is checked on the agreed target screen sizes.", "Basic performance checks are recorded.", "Input validation and relevant security considerations are reviewed."] },
+                            { id: "US 8.3", title: "Prepare Deployment", desc: "As a developer, I need documented deployment configuration, so that the application can be installed and run in the target environment.", criteria: ["Required environment variables and dependencies are documented.", "Docker containerization is provided where appropriate to the project design.", "Deployment and setup instructions are tested in a clean environment where feasible."] },
+                            { id: "US 8.4", title: "Finalize Documentation and Demonstration", desc: "As a project reviewer, I need final documentation and a demonstration, so that I can understand, run, and evaluate the completed system.", criteria: ["Setup and user documentation are included.", "The final demonstration covers the main user workflows.", "The project report describes architecture, features, testing results, assumptions, and known limitations."] }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // =========================================
+        // Dashboard Tab Rendering & Accordions
+        // =========================================
+        function renderEpics(semesterKey) {
+            const container = document.getElementById('epics-container');
+            const focusText = document.getElementById('focus-text');
+            
+            container.innerHTML = ''; 
+            
+            const data = projectData[semesterKey];
+            focusText.innerHTML = `<strong>${data.focus.split(':')[0]}:</strong> ${data.focus.split(':')[1]}`;
+
+            data.epics.forEach((epic, index) => {
+                let storiesHTML = '';
+                epic.stories.forEach(story => {
+                    let criteriaHTML = story.criteria.map(c => `<li>${c}</li>`).join('');
+                    storiesHTML += `
+                        <div class="user-story">
+                            <div class="story-header">
+                                <span class="story-id">${story.id}</span>
+                                <span class="story-title">${story.title}</span>
+                            </div>
+                            <div class="story-desc">
+                                <strong>User Story:</strong> <em>"${story.desc}"</em>
+                            </div>
+                            <div class="criteria-box">
+                                <h4>Acceptance Criteria:</h4>
+                                <ul>${criteriaHTML}</ul>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const epicHTML = `
+                    <div class="epic-card" onclick="toggleAccordion(this)">
+                        <div class="epic-header">
+                            <div class="epic-title">
+                                <h3>${epic.id}: ${epic.title}</h3>
+                                <p>${epic.objective}</p>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="epic-content" onclick="event.stopPropagation()">
+                            ${storiesHTML}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += epicHTML;
+            });
+        }
+
+        function toggleAccordion(element) {
+            element.classList.toggle('active');
+        }
+
+        // =========================================
+        // Unified Tab Switching Logic
+        // =========================================
+        function switchTab(tabKey, btnElement) {
+            // Update Active Button Classes
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            // Select Containers
+            const dashboardContent = document.getElementById('dashboard-content');
+            const presentationContainer = document.getElementById('presentation-container');
+
+            if (tabKey === 'presentation') {
+                // Show Presentation Mode
+                dashboardContent.style.display = 'none';
+                presentationContainer.style.display = 'block';
+                showSlide(currentSlide); // Ensure slide 1 is correct
+            } else {
+                // Show Dashboard Mode
+                dashboardContent.style.display = 'block';
+                presentationContainer.style.display = 'none';
+                renderEpics(tabKey);
+            }
+        }
+
+        // =========================================
+        // Presentation Logic
+        // =========================================
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('slide-counter');
+
+        function showSlide(index) {
+            if (index >= slides.length) currentSlide = slides.length - 1;
+            else if (index < 0) currentSlide = 0;
+            else currentSlide = index;
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === currentSlide) slide.classList.add('active');
+            });
+            
+            counter.innerText = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+
+        // Keyboard arrow navigation (only works when presentation is shown)
+        document.addEventListener('keydown', (e) => {
+            const presentationContainer = document.getElementById('presentation-container');
+            if (presentationContainer.style.display === 'block') {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevSlide();
+                }
+            }
+        });
+
+        // Initialize First Semester on Load
+        renderEpics('sem1');
+    </script>
+</body>
+</html>
